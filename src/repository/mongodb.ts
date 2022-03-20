@@ -25,5 +25,6 @@ export class Database {
       `mongodb://${Database.instance.dbUser}:${Database.instance.dbPass}@${Database.instance.dbHost}:${Database.instance.dbPort}/${Database.instance.dbName}`;
     await connect(url);
     Database.instance.connection = connection;
+    return Database.instance;
   }
 }

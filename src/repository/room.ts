@@ -19,7 +19,7 @@ export class RoomRepository {
 
   async saveRoom(room: Room) {
     try {
-      if (this.collection) return await this.collection.save(room);
+      if (this.collection) return await this.collection.insertOne(room);
       throw new Error("Collection not configured");
     } catch (error) {
       throw error;
