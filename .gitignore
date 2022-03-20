@@ -3,3 +3,5 @@ build/
 mongodb/
 logs/
 coverage/
+.env
+mongo-volume/
