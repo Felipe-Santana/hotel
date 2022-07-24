@@ -31,7 +31,8 @@ export class RoomActions {
       room.size_meters,
       room.number_of_bathrooms,
       [],
-      room.smoking
+      room.smoking,
+      room.description
     );
 
     if (room.amenities && Array.isArray(room.amenities)) {
