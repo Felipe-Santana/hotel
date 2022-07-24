@@ -22,7 +22,7 @@ export async function startHttpServer() {
   const options = {
     key: readFileSync(path.resolve(__dirname, '..', '..', 'certs', 'client-key.pem')),
     cert: readFileSync(path.resolve(__dirname, '..', '..', 'certs', 'client-cert.pem')),
-    passphrase: 'e4jphBTqTq!P@d&@'
+    passphrase: process.env.CERT_PASSPHRASE
   };
   const httpsServer = createServer(options, app);
   const port = process.env.SERVER_PORT || 3000;
