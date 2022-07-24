@@ -5,3 +5,4 @@ logs/
 coverage/
 .env
 mongo-volume/
+certs/
