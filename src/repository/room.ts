@@ -1,4 +1,4 @@
-import { Collection } from "mongoose";
+import { Collection, Types } from "mongoose";
 import { Room } from "../model/room";
 import { Database } from "./mongodb";
 
@@ -20,6 +20,37 @@ export class RoomRepository {
   async saveRoom(room: Room) {
     try {
       if (this.collection) return await this.collection.insertOne(room);
+      throw new Error("Collection not configured");
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async list() {
+    try {
+      if (this.collection) return await this.collection.find().toArray();
+      throw new Error("Collection not configured");
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async delete(id: string) {
+    try {
+      if (this.collection) return await this.collection.deleteOne({
+        _id: new Types.ObjectId(id || '')
+      });
+      throw new Error("Collection not configured");
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async get(id: string) {
+    try {
+      if (this.collection) return await this.collection.findOne({
+        _id: new Types.ObjectId(id || '')
+      });
       throw new Error("Collection not configured");
     } catch (error) {
       throw error;
