@@ -1,4 +1,4 @@
-import { Amenity, Room } from "../model/room";
+import { Amenity, Room } from "../model/room.js";
 
 export class RoomActions {
   static createRoom(room: Room) {

@@ -1,11 +1,11 @@
-import { Collection, Types } from "mongoose";
+import mongoose from "mongoose";
 import { Room } from "../model/room";
 import { Database } from "./mongodb";
 
 export class RoomRepository {
   database: Database;
   collectionName: string;
-  collection!: Collection;
+  collection!: mongoose.Collection;
 
   constructor(database: Database, collectionName?: string) {
     this.database = database;
@@ -38,7 +38,7 @@ export class RoomRepository {
   async delete(id: string) {
     try {
       if (this.collection) return await this.collection.deleteOne({
-        _id: new Types.ObjectId(id || '')
+        _id: new mongoose.Types.ObjectId(id || '')
       });
       throw new Error("Collection not configured");
     } catch (error) {
@@ -49,7 +49,7 @@ export class RoomRepository {
   async get(id: string) {
     try {
       if (this.collection) return await this.collection.findOne({
-        _id: new Types.ObjectId(id || '')
+        _id: new mongoose.Types.ObjectId(id || '')
       });
       throw new Error("Collection not configured");
     } catch (error) {

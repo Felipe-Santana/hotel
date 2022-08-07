@@ -1,14 +1,13 @@
-version: "3.9"
-
-services: 
-  mongodb:
+services:
+  database:
     image: mongo:latest
     container_name: mongodb
-    environment: 
-      - PUID=1000
-      - PGID=1000
-    volumes: 
-      - /home/santana/Desktop/studies/hotel/mongodb/database:/data/db
-    ports: 
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
       - 27017:27017
     restart: unless-stopped

@@ -9,7 +9,6 @@ export class Amenity {
 }
 
 export class Room {
-  id!: string;
   number_of_beds: number;
   identification: string;
   size_meters: number;

@@ -1,12 +1,16 @@
 import express, { json } from 'express';
 import { createServer } from 'https';
-import { RoomController } from '../controllers/roomController';
-import { Database } from '../repository/mongodb';
-import { RoomRepository } from '../repository/room';
-import { logger } from '../util/logger';
-import { RoomRouter } from './routes/room';
+import { RoomController } from '../controllers/roomController.js';
+import { Database } from '../repository/mongodb.js';
+import { RoomRepository } from '../repository/room.js';
+import { logger } from '../util/logger.js';
+import { RoomRouter } from './routes/room.js';
 import { readFileSync } from 'fs';
 import path from 'path';
+import url from 'url';
+import { FileRepository } from '../repository/file.js';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 export async function startHttpServer() {
   const app = express();
@@ -15,9 +19,10 @@ export async function startHttpServer() {
   const database = await Database.getInstance(process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME, process.env.DB_HOST, Number(process.env.DB_PORT));
   if (!database) throw new Error("Unable to establish a connection with the database");
   const roomRepository = new RoomRepository(database, 'rooms');
+  const fileRepository = new FileRepository(database, 'files');
   const roomController = new RoomController(roomRepository);
   const roomRouter = new RoomRouter(roomController);
-  roomRouter.load(app);
+  roomRouter.load(app, fileRepository);
 
   const options = {
     key: readFileSync(path.resolve(__dirname, '..', '..', 'certs', 'client-key.pem')),

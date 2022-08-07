@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { RoomActions } from "../actions/room";
-import { RoomRepository } from '../repository/room';
+import { RoomActions } from "../actions/room.js";
+import { RoomRepository } from '../repository/room.js';
 
 enum ErrorCode {
   MISSING_ROOM = 'missing_room',
