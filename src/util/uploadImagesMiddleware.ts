@@ -4,8 +4,8 @@ import { nanoid } from "nanoid";
 import { existsSync, mkdirSync, createWriteStream } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { FileRepository } from "../repository/file";
-import { File } from '../model/file.js';
+import { FileRepository } from "../room/repository/file";
+import { File } from '../room/model/file.js';
 
 enum ErrorCode {
   OWNER_ID_ERROR = 'owner_id_error',

@@ -1,6 +1,6 @@
 import { Application, Router } from "express";
-import { RoomController } from "../../controllers/roomController";
-import { FileRepository } from "../../repository/file";
+import { RoomController } from "../controllers/roomController";
+import { FileRepository } from "../repository/file";
 import { uploadImagesMiddleware } from "../../util/uploadImagesMiddleware.js";
 
 export class RoomRouter {

@@ -1,14 +1,14 @@
 import express, { json } from 'express';
 import { createServer } from 'https';
-import { RoomController } from '../controllers/roomController.js';
-import { Database } from '../repository/mongodb.js';
-import { RoomRepository } from '../repository/room.js';
+import { RoomController } from '../room/controllers/roomController.js';
+import { Database } from '../room/repository/mongodb.js';
+import { RoomRepository } from '../room/repository/room.js';
 import { logger } from '../util/logger.js';
-import { RoomRouter } from './routes/room.js';
+import { RoomRouter } from '../room/routes/room.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import url from 'url';
-import { FileRepository } from '../repository/file.js';
+import { FileRepository } from '../room/repository/file.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 

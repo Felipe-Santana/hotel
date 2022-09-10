@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Database } from "./mongodb";
 import { File } from "../model/file";
-import { logger } from "../util/logger.js";
+import { logger } from "../../util/logger.js";
 
 export class FileRepository {
   private database: Database;
