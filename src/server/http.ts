@@ -1,5 +1,5 @@
 import express, { Router, json } from 'express';
-import { createServer } from 'http';
+import { createServer } from 'https';
 import { RoomController } from '../room/controllers/roomController.js';
 import { Database } from '../room/repository/mongodb.js';
 import { RoomRepository } from '../room/repository/room.js';
