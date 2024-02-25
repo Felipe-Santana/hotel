@@ -9,7 +9,7 @@ export class RoomRepository {
 
   constructor(database: Database, collectionName?: string) {
     this.database = database;
-    this.collectionName = process.env.ROOM_COLLECTION_NAME || collectionName || 'rooms';
+    this.collectionName = process.env.ROOM_COLLECTION_NAME ?? collectionName ?? 'rooms';
     this.setCollection();
   }
 
@@ -18,42 +18,26 @@ export class RoomRepository {
   }
 
   async saveRoom(room: Room) {
-    try {
-      if (this.collection) return await this.collection.insertOne(room);
-      throw new Error("Collection not configured");
-    } catch (error) {
-      throw error;
-    }
+    if (this.collection) return await this.collection.insertOne(room);
+    throw new Error("Collection not configured");
   }
 
   async list() {
-    try {
-      if (this.collection) return await this.collection.find().toArray();
-      throw new Error("Collection not configured");
-    } catch (error) {
-      throw error;
-    }
+    if (this.collection) return await this.collection.find().toArray();
+    throw new Error("Collection not configured");
   }
 
   async delete(id: string) {
-    try {
-      if (this.collection) return await this.collection.deleteOne({
-        _id: new mongoose.Types.ObjectId(id || '')
-      });
-      throw new Error("Collection not configured");
-    } catch (error) {
-      throw error;
-    }
+    if (this.collection) return await this.collection.deleteOne({
+      _id: new mongoose.Types.ObjectId(id || '')
+    });
+    throw new Error("Collection not configured");
   }
 
   async get(id: string) {
-    try {
-      if (this.collection) return await this.collection.findOne({
-        _id: new mongoose.Types.ObjectId(id || '')
-      });
-      throw new Error("Collection not configured");
-    } catch (error) {
-      throw error;
-    }
+    if (this.collection) return await this.collection.findOne({
+      _id: new mongoose.Types.ObjectId(id || '')
+    });
+    throw new Error("Collection not configured");
   }
 }
