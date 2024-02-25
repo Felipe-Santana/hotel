@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ES2020",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "sourceMap": true,
     "outDir": "./build",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "allowJs": true,
   },
+  "include": [
+    "./src"
+  ],
   "ts-node": {
-    "esm": true
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   }
 }
