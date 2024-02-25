@@ -5,10 +5,7 @@
     "node_modules/**/node_modules",
     "build/**/*"
   ],
-  "execMap": {
-    "ts": "node --loader ts-node/esm"
-  },
-  "ext": "ts,js,json",
+  "ext": "ts,js,json,.env",
   "events": {
     "start": "clear"
   }
