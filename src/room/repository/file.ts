@@ -10,24 +10,22 @@ export class FileRepository {
 
   constructor(database: Database, collectionName?: string) {
     this.database = database;
-    this.collectionName = process.env.FILE_COLLECTION_NAME || collectionName || 'files';
+    this.collectionName = process.env.FILE_COLLECTION_NAME ?? collectionName ?? 'files';
     this.setCollection();
   }
 
-  setCollection() {
+  async setCollection() {
     this.collection = this.database.connection.collection(this.collectionName);
-    this.collection.createIndex({ id: 1 }, { unique: true }, (err) => {
-      if (err) throw err;
+    try {
+      await this.collection.createIndex({ id: 1 }, { unique: true });
       logger.info('File id index created');
-    });
+    } catch (err) {
+      logger.error(err.message);
+    }
   }
 
   async saveFile(file: File) {
-    try {
-      if (this.collection) return await this.collection.insertOne(file);
-      throw new Error("Collection not configured");
-    } catch (error) {
-      throw error;
-    }
+    if (this.collection) return await this.collection.insertOne(file);
+    throw new Error("Collection not configured");
   }
 }
