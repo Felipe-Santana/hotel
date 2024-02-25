@@ -1,11 +1,13 @@
 import busboy from "busboy";
 import { Request, Response, NextFunction } from "express";
-import { nanoid } from "nanoid";
-import { existsSync, mkdirSync, createWriteStream } from 'fs';
+import { createWriteStream } from 'fs';
 import { join } from 'path';
-import { tmpdir } from 'os';
 import { FileRepository } from "../room/repository/file";
 import { File } from '../room/model/file.js';
+import * as uuid from 'uuid';
+import { logger } from "./logger.js";
+import config from 'config';
+import { validTypes, verifyFolder } from "./files.js";
 
 enum ErrorCode {
   OWNER_ID_ERROR = 'owner_id_error',
@@ -13,17 +15,15 @@ enum ErrorCode {
   INVALID_FILE_TYPE = 'invalid_file_type_error'
 }
 
-const validTypes: { [mimetype: string]: string } = {
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg',
-  'image/png': 'png'
-};
+export function uploadImagesMiddleware(fileRepository: FileRepository, repository: string = 'default') {
+  const filesDir = config.get<string>('files.base');
 
-const verifyFolder = (folder: string) => !existsSync(folder) && mkdirSync(folder);
+  const repositoryDir = join(filesDir, repository);
 
-export function uploadImagesMiddleware(repository: string = 'default', fileRepository: FileRepository) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const ownerId = req.params.id;
+  verifyFolder(repositoryDir);
+
+  return (req: Request, res: Response, _: NextFunction) => {
+    const ownerId = req.session.owner_id;
 
     if (!ownerId) {
       return res.status(400).json({
@@ -32,12 +32,23 @@ export function uploadImagesMiddleware(repository: string = 'default', fileRepos
       });
     }
 
+    if (!uuid.validate(ownerId)) {
+      return res.status(400).json({
+        code_err: ErrorCode.OWNER_ID_ERROR,
+        message: 'Invalid owner id format'
+      });
+    }
+
+    const ownerDir = join(repositoryDir, ownerId);
+
+    verifyFolder(ownerDir);
+
     let ids: string[] = [];
 
     try {
       const bb = busboy({ headers: req.headers });
 
-      bb.on('file', async (_name, file, info) => {
+      bb.on('file', (_name, file, info) => {
         const { mimeType, filename } = info;
 
         if (!validTypes[mimeType]) {
@@ -47,28 +58,20 @@ export function uploadImagesMiddleware(repository: string = 'default', fileRepos
           });
         }
 
-        const filesDir = process.env.FILES_DIR || tmpdir();
+        const newFile = new File(ownerId, validTypes[mimeType], repository);
+        const filePath = join(ownerDir, newFile.name);
 
-        verifyFolder(filesDir);
+        fileRepository.saveFile(newFile).then(() => {
+          ids.push(newFile.guid);
 
-        const repositoryDir = join(filesDir, repository);
-
-        verifyFolder(repositoryDir);
-
-        const ownerDir = join(repositoryDir, ownerId);
-
-        verifyFolder(ownerDir);
-
-        const fileId = nanoid();
-        const fileName = `${fileId}.${validTypes[mimeType]}`;
-        const filePath = join(ownerDir, fileName);
-
-        const newFile = new File(fileId, ownerId, fileName, repository);
-        await fileRepository.saveFile(newFile);
-
-        ids.push(fileId);
-
-        file.pipe(createWriteStream(filePath));
+          file.pipe(createWriteStream(filePath));
+        }).catch((err) => {
+          logger.error(err.message);
+          return res.status(500).json({
+            code_err: ErrorCode.UPLOAD_ERROR,
+            message: err.message
+          });
+        });
       });
 
       bb.on('close', () => {
@@ -77,6 +80,7 @@ export function uploadImagesMiddleware(repository: string = 'default', fileRepos
 
       req.pipe(bb);
     } catch (error) {
+      logger.error(error.message);
       return res.status(500).json({
         code_err: ErrorCode.UPLOAD_ERROR,
         message: error.message
