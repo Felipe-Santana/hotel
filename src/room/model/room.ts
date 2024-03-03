@@ -1,3 +1,5 @@
+import { v4 } from "uuid";
+
 export class Amenity {
   label: string;
   identifier: string;
@@ -16,6 +18,7 @@ export class Room {
   amenities: Array<Amenity>;
   smoking: boolean;
   description?: string;
+  id: string;
 
   constructor(
     number_of_beds: number,
@@ -29,9 +32,10 @@ export class Room {
     this.number_of_beds = number_of_beds;
     this.identification = identification;
     this.size_meters = size_meters;
-    this.number_of_bathrooms = number_of_bathrooms || 0;
-    this.amenities = amenities || [];
-    this.smoking = smoking || false;
+    this.number_of_bathrooms = number_of_bathrooms ?? 0;
+    this.amenities = amenities ?? [];
+    this.smoking = smoking ?? false;
     this.description = description;
+    this.id = v4();
   }
 }
