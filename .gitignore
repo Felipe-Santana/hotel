@@ -7,3 +7,5 @@ coverage/
 mongo-volume/
 certs/
 .vscode/
+config/
+!config/default.cjs
