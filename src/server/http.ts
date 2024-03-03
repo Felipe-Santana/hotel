@@ -12,6 +12,7 @@ import { FileRepository } from '../room/repository/file.js';
 import { checkAuth } from './authMiddleware.js';
 import session from 'express-session';
 import config from 'config';
+import helmet from 'helmet';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -19,6 +20,7 @@ export async function startHttpServer() {
   const app = express();
   app.disable('x-powered-by');
   app.use(json());
+  app.use(helmet());
   app.use(session({
     secret: config.get('auth.session_secret'),
     saveUninitialized: true,
